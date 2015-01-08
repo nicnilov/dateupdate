@@ -5,6 +5,6 @@ When a movie is uploaded to Flickr, creation timestamp is taken from its metadat
 ## What it does?
 This script fetches file modification date from original local files and updates 'date taken' attribute of videos previously uploaded to Flickr. The match between local and uploaded files is done by name. A local folder corresponds to a Flickr album.
 ## Prerequisites
--Ruby runtime environment
--Original movie files available by local path with unchaged names
--Movie titles on Flickr reflect original file names (default behaviour)
+- Ruby runtime environment
+- Original movie files available by local path with unchaged names
+- Movie titles on Flickr reflect original file names (default behaviour)
