@@ -1,4 +1,4 @@
-# Ruby script for updating AVCHD (MTS,M2TS, etc) movies creation date timestamp on Flickr
+# Ruby script for updating AVCHD (MTS,M2TS,M2T,TS, etc.) movies creation date timestamp on Flickr
 
 ## Why?
 When a movie is uploaded to Flickr, creation timestamp is taken from its metadata. Flickr's ability to export AVCHD metadata is limited so it falls back to using upload date. This leads to movies being displayed in incorrect order when sorting by date taken.
