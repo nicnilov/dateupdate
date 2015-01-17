@@ -1,7 +1,7 @@
 module DateUpdate
   class Auth
-def initialize(login, password)
+    def initialize(login, password)
 
-end
+    end
   end
 end
