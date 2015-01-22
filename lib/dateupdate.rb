@@ -20,7 +20,7 @@ module DateUpdate
     auth = DateUpdate::Auth.new(consumer_key, consumer_secret)
     auth.request_token
     say("\nGo by this url to authorize this script to access your Flickr account:\n")
-    say(auth.user_authorization_url + "\n")
+    say(auth.user_authorization_url + "\n\n")
     verifier = ask('Enter the code given by Flickr: ')
     auth.access_token(verifier)
     say("\nSuccessfully authenticated\n")
