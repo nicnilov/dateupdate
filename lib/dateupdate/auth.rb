@@ -46,9 +46,9 @@ module DateUpdate
     end
 
     def oauth_escape(s)
-      oauth_encode(s).gsub(/[^a-zA-Z0-9\-\.\_\~]/) { |special|
+      oauth_encode(s).gsub(/[^a-zA-Z0-9\-\.\_\~]/) do |special|
         special.unpack('C*').map { |i| sprintf('%%%02X', i) }.join
-      }
+      end
     end
 
     def signature(string)
