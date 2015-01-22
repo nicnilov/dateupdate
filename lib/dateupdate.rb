@@ -1,5 +1,6 @@
 require 'highline/import'
 require_relative 'dateupdate/logging'
+require_relative 'dateupdate/auth'
 
 module DateUpdate
   def self.display_welcome
@@ -10,6 +11,10 @@ module DateUpdate
 
   def self.start
     display_welcome
+    consumer_key = ask('Enter consumer key: ')
+    consumer_secret = ask('Enter consumer secret: ')
+    auth = DateUpdate::Auth.new(consumer_key, consumer_secret)
+    auth.request_token
     true
   end
 end
