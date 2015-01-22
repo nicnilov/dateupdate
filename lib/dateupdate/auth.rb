@@ -15,18 +15,11 @@ module DateUpdate
 
     def request_token
       @oauth_token = @oauth_token_secret = nil
-
       url = "#{FLICKR_OAUTH_ROOT}/oauth/request_token"
+
       params = sign(:get, url, { oauth_callback: 'oob' })
       response = HTTParty.get(url, debug_output: debug_output, query: params)
-      if response.success?
-        parsed_response = parse_response(response.body)
-        @oauth_token = parsed_response['oauth_token']
-        @oauth_token_secret = parsed_response['oauth_token_secret']
-        true
-      else
-        raise response.body
-      end
+      handle_oauth_response(response)
     end
 
     def user_authorization_url(params = {perms: :write})
@@ -38,14 +31,7 @@ module DateUpdate
       url = "#{FLICKR_OAUTH_ROOT}/oauth/access_token"
       params = sign(:get, url, { oauth_verifier: verifier })
       response = HTTParty.get(url, debug_output: debug_output, query: params)
-      if response.success?
-        parsed_response = parse_response(response.body)
-        @oauth_token = parsed_response['oauth_token']
-        @oauth_token_secret = parsed_response['oauth_token_secret']
-        true
-      else
-        raise response.body
-      end
+      handle_oauth_response(response)
     end
 
     private
@@ -93,8 +79,15 @@ module DateUpdate
       query_params
     end
 
-    def parse_response(string)
-      Hash[string.split('&').map { |s| s.split('=') }]
+    def handle_oauth_response(response)
+      if response.success?
+        parsed_response = Hash[response.body.split('&').map { |s| s.split('=') }]
+        @oauth_token = parsed_response['oauth_token']
+        @oauth_token_secret = parsed_response['oauth_token_secret']
+        parsed_response
+      else
+        raise response.body
+      end
     end
   end
 end
