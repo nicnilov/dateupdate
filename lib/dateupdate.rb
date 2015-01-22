@@ -1,5 +1,5 @@
 require 'highline/import'
-require_relative 'dateupdate/auth'
+require_relative 'dateupdate/flickr/flickrapi'
 
 module DateUpdate
 
@@ -17,12 +17,12 @@ module DateUpdate
   def self.authenticate
     consumer_key = ask('Enter consumer key: ')
     consumer_secret = ask('Enter consumer secret: ')
-    auth = DateUpdate::Auth.new(consumer_key, consumer_secret)
-    auth.request_token
+    flickr = DateUpdate::FlickrApi.new(consumer_key, consumer_secret)
+    flickr.request_token
     say("\nGo by this url to authorize this script to access your Flickr account:\n")
-    say(auth.user_authorization_url + "\n\n")
+    say(flickr.user_authorization_url + "\n\n")
     verifier = ask('Enter the code given by Flickr: ')
-    auth.access_token(verifier)
+    flickr.access_token(verifier)
     say("\nSuccessfully authenticated\n")
   end
 end

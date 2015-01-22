@@ -1,17 +1,12 @@
 require 'httparty'
 
 module DateUpdate
-  class Auth
+  module Auth
 
     FLICKR_OAUTH_ROOT = 'https://www.flickr.com/services'
-    FLICKR_API_ROOT = 'https://api.flickr.com/services/rest'
+    # FLICKR_API_ROOT = 'https://api.flickr.com/services/rest'
 
     attr_accessor :consumer_key, :consumer_secret, :oauth_token, :oauth_token_secret, :debug_output
-
-    def initialize(consumer_key, consumer_secret)
-      @consumer_key = consumer_key.to_s == '' ? ENV['FLICKR_CONSUMER_KEY'] : consumer_key
-      @consumer_secret = consumer_secret.to_s == '' ? ENV['FLICKR_CONSUMER_SECRET'] : consumer_secret
-    end
 
     def request_token
       @oauth_token = @oauth_token_secret = nil
