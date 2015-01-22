@@ -15,8 +15,8 @@ module DateUpdate
 
     def request_token
       @oauth_token = @oauth_token_secret = nil
-      url = "#{FLICKR_OAUTH_ROOT}/oauth/request_token"
 
+      url = "#{FLICKR_OAUTH_ROOT}/oauth/request_token"
       params = sign(:get, url, { oauth_callback: 'oob' })
       response = HTTParty.get(url, debug_output: debug_output, query: params)
       handle_oauth_response(response)
@@ -40,13 +40,13 @@ module DateUpdate
       [OpenSSL::Random.random_bytes(32)].pack('m0').gsub(/\n$/, '')
     end
 
-    def oauth_encode(v)
-      v.to_s.encode('utf-8').force_encoding('ascii-8bit') if RUBY_VERSION >= '1.9'
-      v.to_s
+    def oauth_encode(value)
+      value.to_s.encode('utf-8').force_encoding('ascii-8bit') if RUBY_VERSION >= '1.9'
+      value.to_s
     end
 
-    def oauth_escape(s)
-      oauth_encode(s).gsub(/[^a-zA-Z0-9\-\.\_\~]/) do |special|
+    def oauth_escape(string)
+      oauth_encode(string).gsub(/[^a-zA-Z0-9\-\.\_\~]/) do |special|
         special.unpack('C*').map { |i| sprintf('%%%02X', i) }.join
       end
     end
