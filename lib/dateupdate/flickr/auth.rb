@@ -4,7 +4,6 @@ module DateUpdate
   module Auth
 
     FLICKR_OAUTH_ROOT = 'https://www.flickr.com/services'
-    # FLICKR_API_ROOT = 'https://api.flickr.com/services/rest'
 
     attr_accessor :consumer_key, :consumer_secret, :oauth_token, :oauth_token_secret, :debug_output
 
@@ -27,6 +26,13 @@ module DateUpdate
       params = sign(:get, url, { oauth_verifier: verifier })
       response = HTTParty.get(url, debug_output: debug_output, query: params)
       handle_oauth_response(response)
+
+      ENV['FLICKR_OAUTH_TOKEN'] = @oauth_token
+      ENV['FLICKR_OAUTH_TOKEN_SECRET'] = @oauth_token_secret
+    end
+
+    def authenticated?
+      !(@oauth_token.nil? && @oauth_token_secret.nil?)
     end
 
     private
