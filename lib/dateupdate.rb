@@ -28,20 +28,70 @@ module DateUpdate
   end
 
   def self.process_albums
-    more = true
-    while more do
+    repeat do
       albums = @flickr.list_albums
-      @album = select_album(albums)
+      selected_album = select_album(albums)
+      selected_local_dir = select_local_dir
+      album_videos = @flickr.list_album_videos(selected_album['id'])
+      matching_files = match_local_files(selected_local_dir, album_videos)
+      update_dates(matching_files)
+      ask('Continue with another album? (y/n) :') == 'y'
     end
   end
 
+  private
+
   def self.select_album(albums)
-    albums.keys.each_with_index { |key, index| say("#{index + 1}: '#{albums[key]}'") }
-    album_index = ask('Enter the number of a Flickr album to process: ')
-    album_key = albums.keys[album_index.to_i - 1]
-    album_name = albums[album_key]
-    say("Selected album '#{album_name}' (#{album_key})")
-    { album_key: album_name }
+    albums.each_with_index { |album, index| say("#{index + 1}: '#{album['title']['_content']}'") }
+    album_number = 0
+    repeat do
+      album_number = ask('Enter the number of a Flickr album to process: ')
+      album_number.to_i < 1 || album_number.to_i > albums.size
+    end
+    albums[album_number.to_i - 1]
+  end
+
+  def self.select_local_dir
+    local_dir = ''
+    repeat do
+      local_dir = ask('Enter the local path to the directory containing original files: ')
+      !Dir.exists?(local_dir)
+    end
+    File.join(local_dir, '')
+  end
+
+  def self.match_local_files(local_dir, album_videos)
+    local_files = Dir.glob(local_dir + '*.mts', File::FNM_CASEFOLD).collect do |filepath|
+      filename = filepath[/.+\/(.+)\./, 1]
+      video = album_videos.find { |av| av['title'].downcase == filename.downcase }
+      unless video.nil?
+        {
+          video_id: video['id'],
+          filename: filename,
+          last_modified: File.mtime(filepath).to_i
+        }
+      end
+    end.compact
+  end
+
+  def self.update_dates(matching_files)
+    if matching_files.size > 0
+      if ask("Found #{matching_files.size} matching files. Update dates on Flickr? (y/n):") == 'y'
+        matching_files.each do |file|
+          say("Setting timestamp of #{file[:filename]} to #{Time.at(file[:last_modified]).to_s}")
+          @flickr.set_modified_date(file[:video_id], file[:last_modified])
+        end
+      end
+    else
+      say('No matching files found')
+    end
+  end
+
+  def self.repeat(&block)
+    more = true
+    while more do
+      more = yield
+    end
   end
 end
 

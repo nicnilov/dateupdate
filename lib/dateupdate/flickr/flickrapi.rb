@@ -15,15 +15,27 @@ module DateUpdate
 
     def list_albums
       response = api_request(:get, {method: 'flickr.photosets.getList'})
-      albums = response['photosets']['photoset'].collect { |album| [ album['id'], album['title']['_content'] ] }
-      Hash[albums.sort_by(&:last)]
+      response['photosets']['photoset']
+    end
+
+    def list_album_videos(album_id)
+      response = api_request(:get, {method: 'flickr.photosets.getPhotos', photoset_id: album_id, media: 'videos',
+                                    extras: 'date_taken'})
+      response['photoset']['photo']
+    end
+
+    def set_modified_date(photo_id, timestamp)
+      response = api_request(:post, {method: 'flickr.photos.setDates', photo_id: photo_id,
+                                     date_taken: Time.at(timestamp).strftime('%Y-%m-%d %H:%M:%S'),
+                                     date_taken_granularity: 0})
     end
 
     private
 
     def api_request(method, params = {})
       params = sign(method, FLICKR_API_ROOT, { format: :json, nojsoncallback: 1 }.merge(params))
-      response = HTTParty.send(method, FLICKR_API_ROOT, debug_output: debug_output, query: params)
+      response = HTTParty.send(method, FLICKR_API_ROOT, debug_output: debug_output,
+                               method == :get ? :query : :body =>  params)
     end
   end
 end
