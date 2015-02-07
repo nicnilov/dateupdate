@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'highline'
 gem 'log4r'
 gem 'httparty'
-# gem 'flickraw'
+gem 'dotenv'
 
 group :development, :test do
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console

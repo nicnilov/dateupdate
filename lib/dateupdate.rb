@@ -61,7 +61,7 @@ module DateUpdate
   end
 
   def self.match_local_files(local_dir, album_videos)
-    local_files = Dir.glob(local_dir + '*.mts', File::FNM_CASEFOLD).collect do |filepath|
+    local_files = Dir.glob(File.join(local_dir, "*.{mts,mov,mp4,avi}"), File::FNM_CASEFOLD).collect do |filepath|
       filename = filepath[/.+\/(.+)\./, 1]
       video = album_videos.find { |av| av['title'].downcase == filename.downcase }
       unless video.nil?

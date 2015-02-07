@@ -4,6 +4,7 @@ GEM
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coderay (1.1.0)
+    dotenv (1.0.2)
     ffi (1.9.6)
     formatador (0.2.5)
     guard (2.11.1)
@@ -54,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv
   guard-ctags-bundler
   highline
   httparty
